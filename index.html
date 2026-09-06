@@ -14,6 +14,8 @@ body{font-family:Arial,sans-serif;overflow-x:hidden}
 @supports not (zoom:1){
 #content{transform-origin:top left;transform:scale(var(--zoom-factor));width:calc(100% / var(--zoom-factor))}
 }
+#links{display:flex;flex-direction:column;gap:12px}
+#links a{overflow-wrap:anywhere}
 #zoom-control{position:fixed;top:12px;right:12px;z-index:9999;display:flex;align-items:center;gap:4px;padding:5px;background:rgba(255,255,255,.96);border:1px solid #ccc;border-radius:6px;box-shadow:0 2px 8px rgba(0,0,0,.12);font-size:14px}
 #zoom-control button{min-width:34px;height:30px;padding:0 7px;border:1px solid #bbb;border-radius:4px;background:#f5f5f5;color:#222;font:inherit;cursor:pointer}
 #zoom-control button:disabled{opacity:.45;cursor:default}
