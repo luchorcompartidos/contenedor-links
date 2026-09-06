@@ -1,11 +1,37 @@
+
+
+Enlaces · HTML
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Enlaces</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Enlaces</title>
+<style>
+html,body{margin:0;padding:0}
+body{font-family:Arial,sans-serif;overflow-x:hidden}
+#content{width:100%;box-sizing:border-box;padding:24px;zoom:var(--zoom-level)}
+@supports not (zoom:1){
+#content{transform-origin:top left;transform:scale(var(--zoom-factor));width:calc(100% / var(--zoom-factor))}
+}
+#zoom-control{position:fixed;top:12px;right:12px;z-index:9999;display:flex;align-items:center;gap:4px;padding:5px;background:rgba(255,255,255,.96);border:1px solid #ccc;border-radius:6px;box-shadow:0 2px 8px rgba(0,0,0,.12);font-size:14px}
+#zoom-control button{min-width:34px;height:30px;padding:0 7px;border:1px solid #bbb;border-radius:4px;background:#f5f5f5;color:#222;font:inherit;cursor:pointer}
+#zoom-control button:disabled{opacity:.45;cursor:default}
+#zoom-level{min-width:48px;text-align:center;user-select:none;cursor:pointer;background:none;border:1px solid transparent;border-radius:4px;padding:2px 4px;font:inherit;color:inherit}
+#zoom-level:hover{background:#eee}
+@media(max-width:480px){#zoom-control{top:8px;right:8px}#content{padding:16px}}
+</style>
 </head>
 <body>
+ 
+<div id="zoom-control" aria-label="Control de tamaño">
+<button id="zoom-reset" type="button" aria-label="Restablecer tamaño">Reset</button>
+<button id="zoom-out" type="button" aria-label="Reducir tamaño">−</button>
+<button id="zoom-level" type="button" aria-label="Actualizar página">100%</button>
+<button id="zoom-in" type="button" aria-label="Aumentar tamaño">+</button>
+</div>
+ 
+<div id="content">
 <br><br>
 <h3>CINEMAteca</h3>
   <a href="https://luchorcompartidos.github.io/NuevaPagina">https://luchorcompartidos.github.io/NuevaPagina</a><br><br>
@@ -20,10 +46,45 @@ https://docs.google.com/spreadsheets/d/1BSi3Cgfevy4-oLe6cBV51B_18TTw8yY5z2-uo0HE
 <h4>Planilla Prototip</h4>
 <a href="https://docs.google.com/spreadsheets/d/1rzNWsZ94zUh7mudqsYYYY1ZNcjRJdJtj0KuHA_g3B5s/edit?usp=drivesdk">
 https://docs.google.com/spreadsheets/d/1rzNWsZ94zUh7mudqsYYYY1ZNcjRJdJtj0KuHA_g3B5s/edit?usp=drivesdk</a>
-
 <br>
 <br>
-
-
+</div>
+ 
+<script>
+(()=> {
+const MIN=70,MAX=160,STEP=10,DEFAULT=100,KEY="enlaces-zoom";
+const content=document.getElementById("content");
+const label=document.getElementById("zoom-level");
+const out=document.getElementById("zoom-out");
+const inc=document.getElementById("zoom-in");
+const reset=document.getElementById("zoom-reset");
+let level=DEFAULT;
+try{
+ const saved=Number(localStorage.getItem(KEY));
+ if(Number.isFinite(saved)&&saved>=MIN&&saved<=MAX&&saved%STEP===0) level=saved;
+}catch(e){}
+function applyZoom(value){
+ level=Math.min(MAX,Math.max(MIN,value));
+ content.style.setProperty("--zoom-level",level+"%");
+ content.style.setProperty("--zoom-factor",level/100);
+ label.textContent=level+"%";
+ out.disabled=level<=MIN;
+ inc.disabled=level>=MAX;
+ try{localStorage.setItem(KEY,String(level))}catch(e){}
+}
+function hardReload(){
+ // Fuerza una recarga sin caché, equivalente a Ctrl+F5
+ const url=new URL(location.href);
+ url.searchParams.set("_",Date.now());
+ location.replace(url.toString());
+}
+out.onclick=()=>applyZoom(level-STEP);
+inc.onclick=()=>applyZoom(level+STEP);
+reset.onclick=()=>applyZoom(DEFAULT);
+label.onclick=hardReload;
+applyZoom(level);
+})();
+</script>
 </body>
 </html>
+ 
